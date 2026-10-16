@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108"><rect width="108" height="108" fill="#0F172A"/>
+<rect x="16" y="24" width="76" height="60" rx="8" fill="#1B2336" stroke="#334155" stroke-width="2"/>
+<g fill="#475569"><circle cx="26" cy="33" r="2.5"/><circle cx="34" cy="33" r="2.5"/><circle cx="42" cy="33" r="2.5"/></g>
+<text x="24" y="66" font-family="JetBrains Mono,monospace" font-weight="700" font-size="20" fill="#22C55E">&gt;_</text>
+<text x="54" y="66" font-family="JetBrains Mono,monospace" font-weight="700" font-size="20" fill="#F1F5F9">IP</text></svg>
