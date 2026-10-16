@@ -1,0 +1,240 @@
+<title>NetMask Prototype</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* Layout: one phone-width app column (header, IPv4/IPv6 segmented tabs, form card, result table); full-screen sheets for networks list and settings */
+:root{
+  --bg:#0B1222; --surface:#141C2E; --raised:#1B2438; --line:#2A3650; --fg:#EEF2F8; --fg2:#93A0B8;
+  --accent:#22C55E; --on-accent:#06210F; --info:#38BDF8; --danger:#F87171;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color-scheme:dark;
+}
+:root.light{--bg:#F3F6FA;--surface:#FFFFFF;--raised:#EEF2F7;--line:#D5DDE8;--fg:#0E1626;--fg2:#56647C;
+  --accent:#15803D;--on-accent:#FFFFFF;--info:#0369A1;--danger:#B91C1C;color-scheme:light}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.5}
+.app{max-width:440px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 24px}
+header{display:flex;align-items:center;gap:10px;padding-block:14px}
+.logo{width:34px;height:34px;border-radius:9px;overflow:hidden;flex:none}
+.logo svg{width:100%;height:100%;display:block}
+.brand{font-family:var(--mono);font-weight:700;font-size:19px;flex:1}
+.iconbtn{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--fg);
+  display:grid;place-items:center;cursor:pointer}
+.iconbtn:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--info);outline-offset:2px}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px}
+.seg button{height:40px;border:0;border-radius:9px;background:transparent;color:var(--fg2);font:600 15px var(--mono);cursor:pointer}
+.seg button[aria-selected="true"]{background:var(--raised);color:var(--fg);box-shadow:inset 0 -2px 0 var(--accent)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:14px;margin-top:14px}
+h2{font:600 16px var(--sans);margin:0}
+label.lbl{font-size:13px;color:var(--fg2);display:block;margin-bottom:6px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{min-width:52px;height:38px;padding:0 14px;border-radius:19px;border:1px solid var(--line);background:transparent;color:var(--fg);font:500 14px var(--sans);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+select,input[type=text]{width:100%;height:48px;border-radius:10px;border:1px solid var(--line);background:var(--raised);color:var(--fg);
+  font:500 16px var(--mono);padding:0 12px}
+input.bad{border-color:var(--danger)}
+.err{color:var(--danger);font-size:13px;margin-top:6px}
+.actions{display:grid;grid-template-columns:1fr auto;gap:10px}
+.primary{height:50px;border:0;border-radius:12px;background:var(--accent);color:var(--on-accent);font:700 16px var(--sans);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.ghost{height:50px;padding:0 18px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--fg2);font:500 15px var(--sans);cursor:pointer}
+.res{display:grid;gap:0}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 2px;border-bottom:1px solid var(--line);cursor:pointer}
+.row:last-child{border-bottom:0}
+.row .k{color:var(--fg2);font-size:13.5px}
+.row .v{font:500 14px var(--mono);text-align:right;word-break:break-all;font-variant-numeric:tabular-nums}
+.row.hi .v{color:var(--accent)}
+.more{background:none;border:0;color:var(--info);font:500 14px var(--sans);cursor:pointer;padding:8px 0;justify-self:start}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sec{height:46px;border-radius:12px;border:1px solid var(--line);background:var(--raised);color:var(--fg);font:500 14px var(--sans);cursor:pointer}
+.sheet{position:fixed;inset:0;background:var(--bg);overflow:auto;z-index:20}
+.sheet .app{padding-top:env(safe-area-inset-top,0px)}
+.sheet header h2{flex:1;font-size:17px}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font:13px var(--mono);font-variant-numeric:tabular-nums}
+th,td{padding:9px 10px;text-align:left;white-space:nowrap;border-bottom:1px solid var(--line)}
+th{font:600 12px var(--sans);color:var(--fg2);position:sticky;top:0;background:var(--surface)}
+tr.cur td{color:var(--accent)}
+.set{display:grid;gap:6px}
+.opt{display:flex;gap:8px;flex-wrap:wrap}
+.dev{border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:10px;background:linear-gradient(135deg,var(--surface),var(--raised))}
+.dev .who{display:flex;gap:12px;align-items:center}
+.ava{width:46px;height:46px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font:700 18px var(--mono)}
+.dev p{margin:0;color:var(--fg2);font-size:14px}
+.tg{height:46px;border-radius:12px;border:0;background:#2AABEE;color:#fff;font:600 15px var(--sans);display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;z-index:40}
+.promo{position:fixed;inset:auto 0 0 0;z-index:30;padding:0 max(16px,env(safe-area-inset-left,0px)) calc(16px + env(safe-area-inset-bottom,0px))}
+.promo .in{max-width:440px;margin:0 auto;background:var(--raised);border:1px solid var(--line);border-radius:16px;padding:16px;display:grid;gap:10px;box-shadow:0 -8px 30px rgba(0,0,0,.35)}
+.promo .btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.foot{margin-top:18px;text-align:center;color:var(--fg2);font-size:12px;font-family:var(--mono)}
+.proto{font-size:12px;color:var(--fg2);text-align:center;padding-top:8px}
+@media (prefers-reduced-motion:no-preference){.row,.chip,.seg button{transition:background .15s,color .15s}}
+</style>
+
+<div id="root"></div>
+
+<script>
+const ICON=`<svg viewBox="0 0 108 108"><rect width="108" height="108" fill="#0F172A"/><rect x="16" y="24" width="76" height="60" rx="8" fill="#1B2336" stroke="#334155" stroke-width="2"/><g fill="#475569"><circle cx="26" cy="33" r="2.5"/><circle cx="34" cy="33" r="2.5"/><circle cx="42" cy="33" r="2.5"/></g><text x="24" y="66" font-family="JetBrains Mono,monospace" font-weight="700" font-size="20" fill="#22C55E">&gt;_</text><text x="54" y="66" font-family="JetBrains Mono,monospace" font-weight="700" font-size="20" fill="#F1F5F9">IP</text></svg>`;
+const GEAR=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`;
+const BACK=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>`;
+const PLAY=`<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>`;
+const TG=`<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.7 19.4c-.2 1-.9 1.3-1.7.8l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.2 1.8 11.7c-1-.3-1-1 .2-1.5l18.5-7.1c.9-.3 1.6.2 1.4 1.2z"/></svg>`;
+
+const T={
+tj:{v4t:'Ҳисобкунаки зершабакаи IPv4',v6t:'Ҳисобкунаки зершабакаи IPv6',cls:'Синфи шабака',any:'Ҳама',sub:'Зершабака',ip:'Суроғаи IP',calc:'Ҳисоб кардан',clear:'Тоза кардан',
+ err:'Лутфан суроғаи IP-и дурустро ворид кунед',pfx:'Дарозии префикс',
+ r_ip:'Суроғаи IP',r_net:'Суроғаи шабака',r_range:'Диапазони суроғаҳои хостҳо',r_bc:'Суроғаи пахшкунӣ',r_total:'Шумораи умумии хостҳо',r_usable:'Шумораи хостҳои дастрас',
+ r_mask:'Ниқоби зершабака',r_wild:'Ниқоби wildcard',r_bin:'Ниқоби дуӣ',r_class:'Синфи IP',r_cidr:'Нотатсияи CIDR',r_type:'Навъи IP',r_short:'Кӯтоҳ',
+ priv:'Хусусӣ',pub:'Ҷамъиятӣ',more:'Муфассал ▾',less:'Камтар ▴',all:'Ҳамаи шабакаҳо',share:'Мубодила',
+ r6_full:'Суроғаи пурраи IP',r6_total:'Шумораи умумии суроғаҳо',r6_net:'Шабака',r6_range:'Диапазони IP',
+ nets:(n,p,b)=>`Ҳамаи ${n} шабакаи имконпазири /${p} барои ${b}`,c_net:'Суроғаи шабака',c_range:'Хостҳои истифодашаванда',c_bc:'Пахшкунӣ',
+ set:'Танзимот',lang:'Забон',theme:'Мавзӯъ',dark:'Торик',light:'Равшан',start:'Бахш ҳангоми оғоз',extra:'Ҳамеша майдонҳои иловагиро нишон диҳед',on:'Фаъол',off:'Хомӯш',
+ dev:'Таҳиягар',devtxt:'Сомонаҳо, барномаҳои Android ва нармафзор барои тиҷорат месозам.',order:'Фармоиш дар Telegram',about:'Дар бораи барнома',created:'Эҷодкор',ver:'Версия',
+ promoT:'Барнома маъқул шуд?',promoB:'Ман чунин барномаҳо ва сомонаҳоро бо фармоиш месозам.',write:'Навиштан',never:'Дигар нишон надиҳед',copied:'Нусха гирифта шуд',na:'Нест'},
+ru:{v4t:'Калькулятор подсети IPv4',v6t:'Калькулятор подсетей IPv6',cls:'Класс сети',any:'Любой',sub:'Подсеть',ip:'IP-адрес',calc:'Рассчитать',clear:'Очистить',
+ err:'Пожалуйста, укажите правильный IP-адрес',pfx:'Длина префикса',
+ r_ip:'IP-адрес',r_net:'Сетевой адрес',r_range:'Диапазон адресов для хостов',r_bc:'Широковещательный адрес',r_total:'Общее количество хостов',r_usable:'Количество доступных хостов',
+ r_mask:'Маска подсети',r_wild:'Wildcard-маска',r_bin:'Двоичная маска подсети',r_class:'Класс IP',r_cidr:'Нотация CIDR',r_type:'Тип IP',r_short:'Короткий',
+ priv:'Частный',pub:'Публичный',more:'Подробнее ▾',less:'Скрыть ▴',all:'Все сети',share:'Поделиться',
+ r6_full:'Полный IP-адрес',r6_total:'Всего IP-адресов',r6_net:'Сеть',r6_range:'Диапазон IP',
+ nets:(n,p,b)=>`Все ${n} возможных /${p} сетей для ${b}`,c_net:'Сетевой адрес',c_range:'Диапазон хостов',c_bc:'Широковещательный',
+ set:'Настройки',lang:'Язык',theme:'Тема',dark:'Тёмная',light:'Светлая',start:'Раздел при запуске',extra:'Всегда показывать доп. поля',on:'Вкл',off:'Выкл',
+ dev:'Разработчик',devtxt:'Создаю сайты, Android-приложения и программы для бизнеса.',order:'Заказать в Telegram',about:'О программе',created:'Создатель',ver:'Версия',
+ promoT:'Понравилось приложение?',promoB:'Я делаю такие приложения и сайты на заказ.',write:'Написать',never:'Не показывать',copied:'Скопировано',na:'Нет'},
+en:{v4t:'IPv4 Subnet Calculator',v6t:'IPv6 Subnet Calculator',cls:'Network class',any:'Any',sub:'Subnet',ip:'IP address',calc:'Calculate',clear:'Clear',
+ err:'Please enter a valid IP address',pfx:'Prefix length',
+ r_ip:'IP Address',r_net:'Network Address',r_range:'Usable Host IP Range',r_bc:'Broadcast Address',r_total:'Total Number of Hosts',r_usable:'Number of Usable Hosts',
+ r_mask:'Subnet Mask',r_wild:'Wildcard Mask',r_bin:'Binary Subnet Mask',r_class:'IP Class',r_cidr:'CIDR Notation',r_type:'IP Type',r_short:'Short',
+ priv:'Private',pub:'Public',more:'More details ▾',less:'Less ▴',all:'All networks',share:'Share',
+ r6_full:'Full IP Address',r6_total:'Total IP Addresses',r6_net:'Network',r6_range:'IP Range',
+ nets:(n,p,b)=>`All ${n} of the possible /${p} networks for ${b}`,c_net:'Network Address',c_range:'Usable Host Range',c_bc:'Broadcast',
+ set:'Settings',lang:'Language',theme:'Theme',dark:'Dark',light:'Light',start:'Open on start',extra:'Always show extra fields',on:'On',off:'Off',
+ dev:'Developer',devtxt:'I build websites, Android apps and software for business.',order:'Order on Telegram',about:'About',created:'Created by',ver:'Version',
+ promoT:'Like the app?',promoB:'I build apps and websites like this to order.',write:'Message me',never:"Don't show again",copied:'Copied',na:'N/A'}
+};
+
+/* ---------- IPv4 math ---------- */
+const toInt=ip=>ip.split('.').reduce((a,o)=>a*256+(+o),0);
+const toIp=n=>[24,16,8,0].map(s=>Math.floor(n/2**s)%256).join('.');
+const maskInt=p=>p===0?0:(2**32-2**(32-p));
+const validV4=s=>/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.test(s.trim())&&s.trim().split('.').every(o=>+o<=255&&String(+o)===o);
+const ipClass=ip=>{const f=+ip.split('.')[0];return f<128?'A':f<192?'B':f<224?'C':f<240?'D':'E'};
+const isPrivate=n=>(n>=toInt('10.0.0.0')&&n<=toInt('10.255.255.255'))||(n>=toInt('172.16.0.0')&&n<=toInt('172.31.255.255'))||(n>=toInt('192.168.0.0')&&n<=toInt('192.168.255.255'));
+const bin32=n=>n.toString(2).padStart(32,'0');
+function calc4(ip,p){
+  const n=toInt(ip),m=maskInt(p),size=2**(32-p),net=Math.floor(n/size)*size,bc=net+size-1;
+  const usable=p>=31?0:size-2;
+  const b=bin32(m).match(/.{8}/g).join('.');
+  const hex='0x'+n.toString(16).padStart(8,'0');
+  const h=n.toString(16).padStart(8,'0');
+  return {ip,net:toIp(net),range:usable?`${toIp(net+1)} - ${toIp(bc-1)}`:null,bc:toIp(bc),total:size,usable,mask:toIp(m),wild:toIp(2**32-1-m),bin:b,
+    cls:ipClass(ip),cidr:'/'+p,priv:isPrivate(n),short:`${ip} /${p}`,
+    binId:bin32(n),intId:String(n),hexId:hex,arpa:ip.split('.').reverse().join('.')+'.in-addr.arpa',
+    mapped:`::ffff:${h.slice(0,4)}.${h.slice(4)}`,sixto4:`2002:${h.slice(0,4)}.${h.slice(4)}::/48`};
+}
+function networks(ip,p){
+  const parent=Math.max(0,8*Math.floor((p-1)/8));const bits=Math.min(p-parent,8);const count=2**bits;
+  const size=2**(32-p);const pn=Math.floor(toInt(ip)/2**(32-parent))*2**(32-parent);
+  const oct=ip.split('.');const base=parent===0?'*.*.*.*':oct.slice(0,parent/8).join('.')+'.*'.repeat(4-parent/8);
+  const rows=[];for(let i=0;i<count;i++){const net=pn+i*size,bc=net+size-1;rows.push([toIp(net),p>=31?'—':`${toIp(net+1)} - ${toIp(bc-1)}`,toIp(bc)])}
+  return {base,rows,cur:Math.floor((toInt(ip)-pn)/size)};
+}
+/* ---------- IPv6 math ---------- */
+function parse6(s){s=s.trim().toLowerCase();if(!/^[0-9a-f:]+$/.test(s)||(s.match(/::/g)||[]).length>1)return null;
+  let [a,b]=s.includes('::')?s.split('::'):[s,null];const A=a?a.split(':'):[],B=b?b.split(':'):[];
+  if(b===null&&A.length!==8)return null;const fill=8-A.length-B.length;if(b!==null&&fill<1)return null;
+  const g=[...A,...Array(b!==null?fill:0).fill('0'),...B];if(g.length!==8||g.some(x=>!/^[0-9a-f]{1,4}$/.test(x)))return null;
+  return g.reduce((acc,x)=>(acc<<16n)+BigInt('0x'+x),0n)}
+const full6=n=>n.toString(16).padStart(32,'0').match(/.{4}/g).join(':');
+function calc6(ip,p){const n=parse6(ip);const hostBits=BigInt(128-p);const size=1n<<hostBits;const net=(n>>hostBits)<<hostBits;const last=net+size-1n;
+  const fn=full6(net).split(':');let keep=Math.ceil(p/16);const netStr=fn.slice(0,keep).join(':')+(keep<8?'::':'');
+  return {ip:`${ip.trim()}/${p}`,full:full6(n),total:size.toLocaleString('en-US'),net:netStr,range:`${full6(net)} - ${full6(last)}`}}
+
+/* ---------- state ---------- */
+const store={get(k,d){try{const v=localStorage.getItem('nm_'+k);return v===null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('nm_'+k,JSON.stringify(v))}catch(e){}}};
+const S={lang:store.get('lang','tj'),theme:store.get('theme','dark'),tab:store.get('start','v4'),start:store.get('start','v4'),extraAlways:store.get('extra',false),
+  cls:'C',p:30,ip:'192.168.1.1',err:false,r4:null,showMore:false,p6:64,ip6:'2001:db8:85a3::8a2e:370:7334',err6:false,r6:null,sheet:null,calcs:store.get('calcs',0),promoOff:store.get('promoOff',false),promo:false};
+S.r4=calc4(S.ip,S.p);S.r6=calc6(S.ip6,S.p6);
+const t=k=>T[S.lang][k];
+const range=c=>c==='A'?[8,32]:c==='B'?[16,32]:c==='C'?[24,32]:[1,32];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function row(k,v,hi){return `<div class="row${hi?' hi':''}" data-copy="${esc(v)}" role="button" tabindex="0"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`}
+function v4(){const [lo,hi]=range(S.cls);if(S.p<lo)S.p=lo;
+  let opts='';for(let p=32;p>=lo;p--)opts+=`<option value="${p}"${p===S.p?' selected':''}>${toIp(maskInt(p))} /${p}</option>`;
+  const r=S.r4,more=S.showMore||S.extraAlways;
+  return `<section class="card"><h2>${t('v4t')}</h2>
+  <div><span class="lbl">${t('cls')}</span><div class="chips" role="group">${['Any','A','B','C'].map(c=>`<button class="chip" data-cls="${c}" aria-pressed="${S.cls===c}">${c==='Any'?t('any'):c}</button>`).join('')}</div></div>
+  <div><label class="lbl" for="sub">${t('sub')}</label><select id="sub">${opts}</select></div>
+  <div><label class="lbl" for="ip4">${t('ip')}</label><input id="ip4" type="text" inputmode="decimal" autocomplete="off" value="${esc(S.ip)}" class="${S.err?'bad':''}" placeholder="192.168.1.1">${S.err?`<div class="err">${t('err')}</div>`:''}</div>
+  <div class="actions"><button class="primary" id="go4">${t('calc')} ${PLAY}</button><button class="ghost" id="clr4">${t('clear')}</button></div></section>
+  ${r?`<section class="card"><div class="res">
+  ${row(t('r_ip'),r.ip)}${row(t('r_net'),r.net,1)}${row(t('r_range'),r.range||t('na'))}${row(t('r_bc'),r.bc,1)}${row(t('r_total'),r.total.toLocaleString('ru-RU'))}${row(t('r_usable'),r.usable.toLocaleString('ru-RU'))}
+  ${row(t('r_mask'),r.mask)}${row(t('r_wild'),r.wild)}${row(t('r_bin'),r.bin)}${row(t('r_class'),r.cls)}${row(t('r_cidr'),r.cidr)}${row(t('r_type'),r.priv?t('priv'):t('pub'))}${row(t('r_short'),r.short)}
+  ${more?row('Binary ID',r.binId)+row('Integer ID',r.intId)+row('Hex ID',r.hexId)+row('in-addr.arpa',r.arpa)+row('IPv4 Mapped',r.mapped)+row('6to4 Prefix',r.sixto4):''}
+  </div>${S.extraAlways?'':`<button class="more" id="more">${S.showMore?t('less'):t('more')}</button>`}
+  <div class="tools"><button class="sec" id="nets">${t('all')}</button><button class="sec" id="share">${t('share')}</button></div></section>`:''}`}
+function v6(){let opts='';for(let p=128;p>=1;p--)opts+=`<option value="${p}"${p===S.p6?' selected':''}>/${p}</option>`;const r=S.r6;
+  return `<section class="card"><h2>${t('v6t')}</h2>
+  <div><label class="lbl" for="p6">${t('pfx')}</label><select id="p6">${opts}</select></div>
+  <div><label class="lbl" for="ip6">${t('ip')}</label><input id="ip6" type="text" autocomplete="off" autocapitalize="off" value="${esc(S.ip6)}" class="${S.err6?'bad':''}">${S.err6?`<div class="err">${t('err')}</div>`:''}</div>
+  <div class="actions"><button class="primary" id="go6">${t('calc')} ${PLAY}</button><button class="ghost" id="clr6">${t('clear')}</button></div></section>
+  ${r?`<section class="card"><div class="res">${row(t('r_ip'),r.ip)}${row(t('r6_full'),r.full)}${row(t('r6_total'),r.total)}${row(t('r6_net'),r.net,1)}${row(t('r6_range'),r.range)}</div></section>`:''}`}
+function netSheet(){const n=networks(S.r4.ip,S.p);
+  return `<div class="sheet"><div class="app"><header><button class="iconbtn" data-close aria-label="Back">${BACK}</button><h2>${t('nets')(n.rows.length,S.p,n.base)}</h2></header>
+  <div class="tbl"><table><thead><tr><th>${t('c_net')}</th><th>${t('c_range')}</th><th>${t('c_bc')}</th></tr></thead><tbody>
+  ${n.rows.map((r,i)=>`<tr${i===n.cur?' class="cur"':''}><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</tbody></table></div></div></div>`}
+function setSheet(){const ch=(name,val,cur,label)=>`<button class="chip" data-set="${name}" data-val="${val}" aria-pressed="${cur===val}">${label}</button>`;
+  return `<div class="sheet"><div class="app"><header><button class="iconbtn" data-close aria-label="Back">${BACK}</button><h2>${t('set')}</h2></header>
+  <section class="card">
+   <div class="set"><span class="lbl">${t('lang')}</span><div class="opt">${ch('lang','tj',S.lang,'Тоҷикӣ')}${ch('lang','ru',S.lang,'Русский')}${ch('lang','en',S.lang,'English')}</div></div>
+   <div class="set"><span class="lbl">${t('theme')}</span><div class="opt">${ch('theme','dark',S.theme,t('dark'))}${ch('theme','light',S.theme,t('light'))}</div></div>
+   <div class="set"><span class="lbl">${t('start')}</span><div class="opt">${ch('start','v4',S.start,'IPv4')}${ch('start','v6',S.start,'IPv6')}</div></div>
+   <div class="set"><span class="lbl">${t('extra')}</span><div class="opt">${ch('extra',true,S.extraAlways,t('on'))}${ch('extra',false,S.extraAlways,t('off'))}</div></div>
+  </section>
+  <section class="card"><span class="lbl">${t('dev')}</span><div class="dev"><div class="who"><div class="ava">N</div><div><b>Neka</b><p>@Neka_m</p></div></div>
+   <p>${t('devtxt')}</p><a class="tg" href="https://t.me/Neka_m" target="_blank" rel="noopener">${TG} ${t('order')}</a></div></section>
+  <section class="card"><span class="lbl">${t('about')}</span><div class="res">${row('NetMask',t('ver')+' 1.0.0')}${row(t('created'),'Neka · @Neka_m')}</div></section>
+  </div></div>`}
+
+function render(){
+  document.documentElement.classList.toggle('light',S.theme==='light');
+  const showPromo=S.promo&&!S.promoOff;
+  document.getElementById('root').innerHTML=`<div class="app">
+   <header><div class="logo">${ICON}</div><div class="brand">NetMask</div><button class="iconbtn" id="gear" aria-label="${t('set')}">${GEAR}</button></header>
+   <div class="seg" role="tablist"><button role="tab" data-tab="v4" aria-selected="${S.tab==='v4'}">IPv4</button><button role="tab" data-tab="v6" aria-selected="${S.tab==='v6'}">IPv6</button></div>
+   ${S.tab==='v4'?v4():v6()}
+   <div class="foot">NetMask · Neka · @Neka_m</div>
+   <div class="proto">Прототип: значения можно копировать нажатием на строку.</div></div>
+   ${S.sheet==='nets'?netSheet():''}${S.sheet==='set'?setSheet():''}
+   ${showPromo?`<div class="promo"><div class="in"><b>${t('promoT')}</b><span style="color:var(--fg2)">${t('promoB')}</span><div class="btns"><a class="tg" href="https://t.me/Neka_m" target="_blank" rel="noopener">${TG} ${t('write')}</a><button class="ghost" id="never">${t('never')}</button></div></div></div>`:''}`;
+}
+function toast(msg){const d=document.createElement('div');d.className='toast';d.textContent=msg;document.body.appendChild(d);setTimeout(()=>d.remove(),1400)}
+function counted(){S.calcs++;store.set('calcs',S.calcs);if(S.calcs===10&&!S.promoOff)S.promo=true}
+
+document.addEventListener('click',e=>{const el=e.target.closest('button,[data-copy],a');if(!el)return;
+  if(el.dataset.tab){S.tab=el.dataset.tab;return render()}
+  if(el.dataset.cls){S.cls=el.dataset.cls;const [lo]=range(S.cls);if(S.p<lo)S.p=lo;return render()}
+  if(el.id==='go4'){S.ip=document.getElementById('ip4').value.trim();S.p=+document.getElementById('sub').value;
+    if(!validV4(S.ip)){S.err=true;S.r4=null}else{S.err=false;S.r4=calc4(S.ip,S.p);counted()}return render()}
+  if(el.id==='clr4'){S.ip='';S.r4=null;S.err=false;return render()}
+  if(el.id==='go6'){S.ip6=document.getElementById('ip6').value.trim();S.p6=+document.getElementById('p6').value;
+    if(parse6(S.ip6)===null){S.err6=true;S.r6=null}else{S.err6=false;S.r6=calc6(S.ip6,S.p6);counted()}return render()}
+  if(el.id==='clr6'){S.ip6='';S.r6=null;S.err6=false;return render()}
+  if(el.id==='more'){S.showMore=!S.showMore;return render()}
+  if(el.id==='nets'){S.sheet='nets';return render()}
+  if(el.id==='gear'){S.sheet='set';return render()}
+  if(el.hasAttribute('data-close')){S.sheet=null;return render()}
+  if(el.id==='never'){S.promoOff=true;S.promo=false;store.set('promoOff',true);return render()}
+  if(el.dataset.set){let v=el.dataset.val;if(v==='true')v=true;if(v==='false')v=false;const k=el.dataset.set;
+    if(k==='lang')S.lang=v;if(k==='theme')S.theme=v;if(k==='start')S.start=v;if(k==='extra')S.extraAlways=v;store.set(k,v);return render()}
+  if(el.id==='share'){const r=S.r4;const txt=`${r.short}\n${t('r_net')}: ${r.net}\n${t('r_range')}: ${r.range||t('na')}\n${t('r_bc')}: ${r.bc}\n${t('r_mask')}: ${r.mask}\n— NetMask by @Neka_m`;copy(txt);return}
+  if(el.dataset.copy!==undefined){copy(el.dataset.copy)}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'){if(e.target.id==='ip4')document.getElementById('go4').click();if(e.target.id==='ip6')document.getElementById('go6').click();
+  if(e.target.dataset&&e.target.dataset.copy!==undefined)copy(e.target.dataset.copy)}});
+document.addEventListener('change',e=>{if(e.target.id==='sub'){S.p=+e.target.value}if(e.target.id==='p6'){S.p6=+e.target.value}});
+function copy(txt){const done=()=>toast(t('copied'));try{navigator.clipboard.writeText(txt).then(done,done)}catch(e){done()}}
+render();
+</script>
