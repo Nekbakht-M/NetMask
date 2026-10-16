@@ -12,9 +12,9 @@ class Settings extends ChangeNotifier {
         extraAlways = _p.getBool('extra') ?? false,
         calcCount = _p.getInt('calcs') ?? 0,
         promoOff = _p.getBool('promoOff') ?? false,
-        lastIp4 = _p.getString('ip4') ?? '192.168.1.1',
+        lastIp4 = _p.getString('ip4') ?? '',
         lastPrefix4 = _p.getInt('p4') ?? 24,
-        lastIp6 = _p.getString('ip6') ?? '2001:db8:85a3::8a2e:370:7334',
+        lastIp6 = _p.getString('ip6') ?? '',
         lastPrefix6 = _p.getInt('p6') ?? 64;
 
   final SharedPreferences _p;

@@ -29,7 +29,7 @@ class _Ipv4ViewState extends State<Ipv4View> {
     final st = SettingsScope.read(context);
     _ip = TextEditingController(text: st.lastIp4);
     _prefix = st.lastPrefix4;
-    _cls = _prefix >= 24 ? 'C' : _prefix >= 16 ? 'B' : _prefix >= 8 ? 'A' : null;
+    _cls = st.lastIp4.isEmpty ? null : _prefix >= 24 ? 'C' : _prefix >= 16 ? 'B' : _prefix >= 8 ? 'A' : null;
     if (isValidIpv4(st.lastIp4)) _result = Ipv4Result(st.lastIp4, _prefix);
   }
 
