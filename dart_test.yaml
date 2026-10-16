@@ -1,0 +1,4 @@
+tags:
+  screens:
+    # Golden screenshots for layout review; run with: flutter test --update-goldens --run-skipped -t screens
+    skip: "screenshot review only"

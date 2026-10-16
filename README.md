@@ -14,5 +14,13 @@ IP subnet calculator for system administrators. Android first, desktop later (Fl
 
 See [docs/plan.md](docs/plan.md) for the full plan.
 
+## Development
+- `flutter test` — calculation tests (values checked against calculator.net).
+- `flutter test --update-goldens --run-skipped -t screens` — renders screen snapshots to `test/goldens/` for layout review.
+- APK: GitHub → Actions → **Build Android APK** → Run workflow. The APK appears in Releases.
+- `prototype/index.html` — the approved HTML mockup.
+
+Fonts: JetBrains Mono and IBM Plex Sans, SIL Open Font License (see `assets/fonts/`).
+
 ## Author
 Created by **Neka** · Telegram [@Neka_m](https://t.me/Neka_m) — websites, Android apps and software to order.
