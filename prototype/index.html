@@ -71,6 +71,7 @@ tr.cur td{color:var(--accent)}
 .nitem .l span{color:var(--fg);font-size:13px;overflow-wrap:anywhere}
 .ntools{display:flex;gap:8px;flex-wrap:wrap}
 .xlsbtn{height:40px;padding:0 14px;border-radius:10px;border:0;background:#1D6F42;color:#fff;font:600 14px var(--sans);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.sharetxt{margin:0;max-height:40vh;overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px;font:12.5px/1.6 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;color:var(--fg)}
 .modal{position:fixed;inset:0;z-index:35;background:rgba(0,0,0,.55);display:grid;place-items:end center;padding:0 max(16px,env(safe-area-inset-left,0px)) calc(16px + env(safe-area-inset-bottom,0px))}
 .modal .in{width:100%;max-width:440px;background:var(--raised);border:1px solid var(--line);border-radius:16px;padding:16px;display:grid;gap:12px}
 .file{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
@@ -122,7 +123,7 @@ tj:{v4t:'Ҳисобкунаки зершабакаи IPv4',v6t:'Ҳисобкун
  r_mask:'Ниқоби зершабака',r_wild:'Ниқоби wildcard',r_bin:'Ниқоби дуӣ',r_class:'Синфи IP',r_cidr:'Нотатсияи CIDR',r_type:'Навъи IP',r_short:'Кӯтоҳ',
  priv:'Хусусӣ',pub:'Ҷамъиятӣ',more:'Муфассал ▾',less:'Камтар ▴',all:'Ҳамаи шабакаҳо',share:'Мубодила',
  r6_full:'Суроғаи пурраи IP',r6_total:'Шумораи умумии суроғаҳо',r6_net:'Шабака',r6_range:'Диапазони IP',
- netsT:p=>`Ҳамаи шабакаҳо /${p}`,xls:'Мубодила (Excel)',xlsT:'Файли Excel омода аст',xlsB:'Дар барнома ин тугма менюи «Мубодила»-и Android-ро мекушояд: Telegram, WhatsApp, почта ё нигоҳ доштан.',copyT:'Нусха барои Excel',close:'Пӯшидан',netsS:(n,b)=>`${n} шабака · ${b}`,jump:'Ба шабакаи ман',hosts:'Хостҳо',madeby:'Таҳия: Neka',nets:(n,p,b)=>`Ҳамаи ${n} шабакаи имконпазири /${p} барои ${b}`,c_net:'Суроғаи шабака',c_range:'Хостҳои истифодашаванда',c_bc:'Пахшкунӣ',
+ netsT:p=>`Ҳамаи шабакаҳо /${p}`,shT:'Мубодилаи натиҷа',asText:'Нусхаи матн',asXls:'Ҳамчун Excel',shB:'Дар барнома: менюи «Мубодила»-и Android (Telegram, WhatsApp, почта).',xls:'Мубодила (Excel)',xlsT:'Файли Excel омода аст',xlsB:'Дар барнома ин тугма менюи «Мубодила»-и Android-ро мекушояд: Telegram, WhatsApp, почта ё нигоҳ доштан.',copyT:'Нусха барои Excel',close:'Пӯшидан',netsS:(n,b)=>`${n} шабака · ${b}`,jump:'Ба шабакаи ман',hosts:'Хостҳо',madeby:'Таҳия: Neka',nets:(n,p,b)=>`Ҳамаи ${n} шабакаи имконпазири /${p} барои ${b}`,c_net:'Суроғаи шабака',c_range:'Хостҳои истифодашаванда',c_bc:'Пахшкунӣ',
  set:'Танзимот',lang:'Забон',theme:'Мавзӯъ',dark:'Торик',light:'Равшан',start:'Бахш ҳангоми оғоз',extra:'Ҳамеша майдонҳои иловагиро нишон диҳед',on:'Фаъол',off:'Хомӯш',
  dev:'Таҳиягар',devtxt:'Сомонаҳо, барномаҳои Android ва нармафзор барои тиҷорат месозам.',order:'Фармоиш дар Telegram',about:'Дар бораи барнома',created:'Эҷодкор',ver:'Версия',
  promoT:'Барнома маъқул шуд?',promoB:'Ман чунин барномаҳо ва сомонаҳоро бо фармоиш месозам.',write:'Навиштан',never:'Дигар нишон надиҳед',copied:'Нусха гирифта шуд',na:'Нест'},
@@ -132,7 +133,7 @@ ru:{v4t:'Калькулятор подсети IPv4',v6t:'Калькулятор
  r_mask:'Маска подсети',r_wild:'Wildcard-маска',r_bin:'Двоичная маска подсети',r_class:'Класс IP',r_cidr:'Нотация CIDR',r_type:'Тип IP',r_short:'Короткий',
  priv:'Частный',pub:'Публичный',more:'Подробнее ▾',less:'Скрыть ▴',all:'Все сети',share:'Поделиться',
  r6_full:'Полный IP-адрес',r6_total:'Всего IP-адресов',r6_net:'Сеть',r6_range:'Диапазон IP',
- netsT:p=>`Все сети /${p}`,xls:'Поделиться (Excel)',xlsT:'Файл Excel готов',xlsB:'В приложении эта кнопка откроет меню «Поделиться» Android: Telegram, WhatsApp, почта или сохранить в файлы.',copyT:'Копировать для Excel',close:'Закрыть',netsS:(n,b)=>`${n} сетей · ${b}`,jump:'К моей сети',hosts:'Хосты',madeby:'Создатель: Neka',nets:(n,p,b)=>`Все ${n} возможных /${p} сетей для ${b}`,c_net:'Сетевой адрес',c_range:'Диапазон хостов',c_bc:'Широковещательный',
+ netsT:p=>`Все сети /${p}`,shT:'Поделиться результатом',asText:'Копировать текст',asXls:'Как Excel',shB:'В приложении откроется меню «Поделиться» Android (Telegram, WhatsApp, почта).',xls:'Поделиться (Excel)',xlsT:'Файл Excel готов',xlsB:'В приложении эта кнопка откроет меню «Поделиться» Android: Telegram, WhatsApp, почта или сохранить в файлы.',copyT:'Копировать для Excel',close:'Закрыть',netsS:(n,b)=>`${n} сетей · ${b}`,jump:'К моей сети',hosts:'Хосты',madeby:'Создатель: Neka',nets:(n,p,b)=>`Все ${n} возможных /${p} сетей для ${b}`,c_net:'Сетевой адрес',c_range:'Диапазон хостов',c_bc:'Широковещательный',
  set:'Настройки',lang:'Язык',theme:'Тема',dark:'Тёмная',light:'Светлая',start:'Раздел при запуске',extra:'Всегда показывать доп. поля',on:'Вкл',off:'Выкл',
  dev:'Разработчик',devtxt:'Создаю сайты, Android-приложения и программы для бизнеса.',order:'Заказать в Telegram',about:'О программе',created:'Создатель',ver:'Версия',
  promoT:'Понравилось приложение?',promoB:'Я делаю такие приложения и сайты на заказ.',write:'Написать',never:'Не показывать',copied:'Скопировано',na:'Нет'},
@@ -142,7 +143,7 @@ en:{v4t:'IPv4 Subnet Calculator',v6t:'IPv6 Subnet Calculator',cls:'Network class
  r_mask:'Subnet Mask',r_wild:'Wildcard Mask',r_bin:'Binary Subnet Mask',r_class:'IP Class',r_cidr:'CIDR Notation',r_type:'IP Type',r_short:'Short',
  priv:'Private',pub:'Public',more:'More details ▾',less:'Less ▴',all:'All networks',share:'Share',
  r6_full:'Full IP Address',r6_total:'Total IP Addresses',r6_net:'Network',r6_range:'IP Range',
- netsT:p=>`All /${p} networks`,xls:'Share (Excel)',xlsT:'Excel file is ready',xlsB:'In the app this button opens the Android share menu: Telegram, WhatsApp, email or save to files.',copyT:'Copy for Excel',close:'Close',netsS:(n,b)=>`${n} networks · ${b}`,jump:'Go to my network',hosts:'Hosts',madeby:'Made by Neka',nets:(n,p,b)=>`All ${n} of the possible /${p} networks for ${b}`,c_net:'Network Address',c_range:'Usable Host Range',c_bc:'Broadcast',
+ netsT:p=>`All /${p} networks`,shT:'Share result',asText:'Copy text',asXls:'As Excel',shB:'In the app this opens the Android share menu (Telegram, WhatsApp, email).',xls:'Share (Excel)',xlsT:'Excel file is ready',xlsB:'In the app this button opens the Android share menu: Telegram, WhatsApp, email or save to files.',copyT:'Copy for Excel',close:'Close',netsS:(n,b)=>`${n} networks · ${b}`,jump:'Go to my network',hosts:'Hosts',madeby:'Made by Neka',nets:(n,p,b)=>`All ${n} of the possible /${p} networks for ${b}`,c_net:'Network Address',c_range:'Usable Host Range',c_bc:'Broadcast',
  set:'Settings',lang:'Language',theme:'Theme',dark:'Dark',light:'Light',start:'Open on start',extra:'Always show extra fields',on:'On',off:'Off',
  dev:'Developer',devtxt:'I build websites, Android apps and software for business.',order:'Order on Telegram',about:'About',created:'Created by',ver:'Version',
  promoT:'Like the app?',promoB:'I build apps and websites like this to order.',write:'Message me',never:"Don't show again",copied:'Copied',na:'N/A'}
@@ -214,7 +215,7 @@ function v6(){let opts='';for(let p=128;p>=1;p--)opts+=`<option value="${p}"${p=
   <div><label class="lbl" for="p6">${t('pfx')}</label><select id="p6">${opts}</select></div>
   <div><label class="lbl" for="ip6">${t('ip')}</label><input id="ip6" type="text" autocomplete="off" autocapitalize="off" value="${esc(S.ip6)}" class="${S.err6?'bad':''}">${S.err6?`<div class="err">${t('err')}</div>`:''}</div>
   <div class="actions"><button class="primary" id="go6">${t('calc')} ${PLAY}</button><button class="ghost" id="clr6">${t('clear')}</button></div></section>
-  ${r?`<section class="card"><div class="res">${row(t('r_ip'),r.ip)}${row(t('r6_full'),r.full)}${row(t('r6_total'),r.total)}${row(t('r6_net'),r.net,1)}${row(t('r6_range'),r.range)}</div></section>`:''}`}
+  ${r?`<section class="card"><div class="res">${row(t('r_ip'),r.ip)}${row(t('r6_full'),r.full)}${row(t('r6_total'),r.total)}${row(t('r6_net'),r.net,1)}${row(t('r6_range'),r.range)}</div><div class="tools" style="grid-template-columns:1fr"><button class="sec" id="share">${t('share')}</button></div></section>`:''}`}
 function netSheet(){const n=networks(S.r4.ip,S.p);
   return `<div class="sheet"><div class="app"><header><button class="iconbtn" data-close aria-label="Back">${BACK}</button><div class="nhead"><h2>${t('netsT')(S.p)}</h2><span>${t('netsS')(n.rows.length,n.base)}</span></div></header>
   <div class="nlist"><div class="ntools"><button class="jump" id="jump">${t('jump')}</button><button class="xlsbtn" id="xls">${XLS} ${t('xls')}</button></div>
@@ -224,6 +225,19 @@ const SI={lang:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 
  theme:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',start:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/>',
  extra:'<path d="M4 6h16M4 12h16M4 18h10"/>'};
 const sico=k=>`<span class="sico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${SI[k]}</svg></span>`;
+function shareFields(){if(S.tab==='v6'){const r=S.r6;return [['IPv6',''],[t('r_ip'),r.ip],[t('r6_full'),r.full],[t('r6_total'),r.total],[t('r6_net'),r.net],[t('r6_range'),r.range]]}
+  const r=S.r4;const f=[['IPv4',''],[t('r_ip'),r.ip],[t('r_net'),r.net],[t('r_range'),r.range||t('na')],[t('r_bc'),r.bc],[t('r_total'),r.total.toLocaleString('ru-RU')],[t('r_usable'),r.usable.toLocaleString('ru-RU')],
+  [t('r_mask'),r.mask],[t('r_wild'),r.wild],[t('r_bin'),r.bin],[t('r_class'),r.cls],[t('r_cidr'),r.cidr],[t('r_type'),r.priv?t('priv'):t('pub')]];
+  if(S.showMore||S.extraAlways)f.push(['Binary ID',r.binId],['Integer ID',r.intId],['Hex ID',r.hexId],['in-addr.arpa',r.arpa],['IPv4 Mapped',r.mapped],['6to4 Prefix',r.sixto4]);return f}
+function shareText(){const f=shareFields();const head=f[0][0]==='IPv4'?`NetMask · IPv4 · ${S.r4.short}`:`NetMask · IPv6 · ${S.r6.ip}`;
+  return head+'\n\n'+f.slice(1).map(([k,v])=>`${k}: ${v}`).join('\n')+'\n\n— NetMask · '+t('madeby')}
+function shareModal(){const f=shareFields();const name=S.tab==='v6'?'NetMask_IPv6.xlsx':`NetMask_${S.r4.net}_${S.p}.xlsx`;
+  return `<div class="modal"><div class="in" role="dialog" aria-label="${t('shT')}"><b>${t('shT')}</b>
+  <pre class="sharetxt">${esc(shareText())}</pre>
+  <div class="file"><div class="x">XLS</div><div><b>${name}</b><small>${f.length-1} × 2</small></div></div>
+  <span style="color:var(--fg2);font-size:13.5px">${t('shB')}</span>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><button class="primary" id="shcopy">${t('asText')}</button><button class="sec" id="shxls">${t('asXls')}</button></div>
+  <button class="ghost" id="shclose">${t('close')}</button></div></div>`}
 function xlsData(){const n=networks(S.r4.ip,S.p);return {n,name:`NetMask_${n.rows[0][0]}_${S.p}.xlsx`,
   head:['#',t('c_net'),'CIDR',t('c_range'),t('c_bc'),t('r_mask'),t('r_usable')],
   rows:n.rows.map((r,i)=>[i+1,r[0],'/'+S.p,r[1],r[2],toIp(maskInt(S.p)),S.p>=31?0:2**(32-S.p)-2])}}
@@ -256,7 +270,7 @@ function render(){
    ${S.tab==='v4'?v4():v6()}
    <div class="foot"><a class="by" href="https://t.me/Neka_m" target="_blank" rel="noopener">${t('madeby')} ${TG}</a></div>
    <div class="proto">Прототип: значения можно копировать нажатием на строку.</div></div>
-   ${S.sheet==='nets'?netSheet():''}${S.xls?xlsModal():''}${S.sheet==='set'?setSheet():''}
+   ${S.sheet==='nets'?netSheet():''}${S.xls?xlsModal():''}${S.share?shareModal():''}${S.sheet==='set'?setSheet():''}
    ${showPromo?`<div class="promo"><div class="in"><b>${t('promoT')}</b><span style="color:var(--fg2)">${t('promoB')}</span><div class="btns"><a class="tg" href="https://t.me/Neka_m" target="_blank" rel="noopener">${TG} ${t('write')}</a><button class="ghost" id="never">${t('never')}</button></div></div></div>`:''}`;
 }
 function toast(msg){const d=document.createElement('div');d.className='toast';d.textContent=msg;document.body.appendChild(d);setTimeout(()=>d.remove(),1400)}
@@ -282,7 +296,10 @@ document.addEventListener('click',e=>{const el=e.target.closest('button,[data-co
   if(el.id==='never'){S.promoOff=true;S.promo=false;store.set('promoOff',true);return render()}
   if(el.dataset.set){let v=el.dataset.val;if(v==='true')v=true;if(v==='false')v=false;const k=el.dataset.set;
     if(k==='lang')S.lang=v;if(k==='theme')S.theme=v;if(k==='start')S.start=v;if(k==='extra')S.extraAlways=v;store.set(k,v);return render()}
-  if(el.id==='share'){const r=S.r4;const txt=`${r.short}\n${t('r_net')}: ${r.net}\n${t('r_range')}: ${r.range||t('na')}\n${t('r_bc')}: ${r.bc}\n${t('r_mask')}: ${r.mask}\n— NetMask · t.me/Neka_m`;copy(txt);return}
+  if(el.id==='share'){S.share=true;return render()}
+  if(el.id==='shclose'){S.share=false;return render()}
+  if(el.id==='shcopy'){copy(shareText());return}
+  if(el.id==='shxls'){copy(shareFields().slice(1).map(r=>r.join('\t')).join('\n'));return}
   if(el.dataset.copy!==undefined){copy(el.dataset.copy)}
 });
 document.addEventListener('keydown',e=>{if(e.key==='Enter'){if(e.target.id==='ip4')document.getElementById('go4').click();if(e.target.id==='ip6')document.getElementById('go6').click();
