@@ -272,7 +272,7 @@ function render(){
    <header><div class="logo">${ICON}</div><div class="brand">NetMask</div><button class="iconbtn" id="gear" aria-label="${t('set')}">${GEAR}</button></header>
    <div class="seg" role="tablist"><button role="tab" data-tab="v4" aria-selected="${S.tab==='v4'}">IPv4</button><button role="tab" data-tab="v6" aria-selected="${S.tab==='v6'}">IPv6</button></div>
    ${S.tab==='v4'?v4():v6()}
-   <a class="foot" href="https://t.me/Neka_m" target="_blank" rel="noopener"><div class="ava sm">N</div><div class="ft"><b>${t('madeby')}</b><span>${t('devtxt')}</span></div><span class="tgc">${TG}</span></a>
+   
    <div class="proto">Прототип: значения можно копировать нажатием на строку.</div></div>
    ${S.sheet==='nets'?netSheet():''}${S.xls?xlsModal():''}${S.share?shareModal():''}${S.sheet==='set'?setSheet():''}
    ${showPromo?`<div class="promo"><div class="in"><b>${t('promoT')}</b><span style="color:var(--fg2)">${t('promoB')}</span><div class="btns"><a class="tg" href="https://t.me/Neka_m" target="_blank" rel="noopener">${TG} ${t('write')}</a><button class="ghost" id="never">${t('never')}</button></div></div></div>`:''}`;
