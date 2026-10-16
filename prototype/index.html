@@ -12,6 +12,7 @@
 }
 :root.light{--bg:#F3F6FA;--surface:#FFFFFF;--raised:#EEF2F7;--line:#D5DDE8;--fg:#0E1626;--fg2:#56647C;
   --accent:#15803D;--on-accent:#FFFFFF;--info:#0369A1;--danger:#B91C1C;color-scheme:light}
+*,*::before,*::after{box-sizing:border-box}
 html,body{height:100%}
 body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.5}
 .app{max-width:440px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;
@@ -71,6 +72,17 @@ tr.cur td{color:var(--accent)}
 .jump{height:40px;padding:0 14px;border-radius:10px;border:1px solid var(--accent);background:transparent;color:var(--accent);font:600 14px var(--sans);cursor:pointer;justify-self:start}
 .by{display:inline-flex;align-items:center;gap:6px;color:var(--fg2);text-decoration:none;font:500 13px var(--sans);padding:8px 12px;border-radius:20px;border:1px solid var(--line)}
 .by svg{color:#2AABEE}
+.slist{gap:0;padding:4px 16px}
+.srow{display:grid;gap:10px;padding:14px 0;border-bottom:1px solid var(--line)}.srow:last-child{border-bottom:0}
+.srow.inline{grid-template-columns:minmax(0,1fr) auto;align-items:center}
+.shead{display:flex;align-items:center;gap:10px;font-weight:500;font-size:15px;min-width:0}
+.sico{width:32px;height:32px;border-radius:9px;background:var(--raised);color:var(--accent);display:grid;place-items:center;flex:none}
+.segc{display:grid;gap:4px;background:var(--raised);border:1px solid var(--line);border-radius:11px;padding:3px}
+.segc button{height:38px;border:0;border-radius:8px;background:transparent;color:var(--fg2);font:500 14px var(--sans);cursor:pointer;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.segc button[aria-checked="true"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.25),inset 0 -2px 0 var(--accent)}
+.switch{width:52px;height:32px;border-radius:16px;border:1px solid var(--line);background:var(--raised);position:relative;cursor:pointer;flex:none}
+.switch i{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:var(--fg2);transition:left .15s}
+.switch[aria-checked="true"]{background:var(--accent);border-color:var(--accent)}.switch[aria-checked="true"] i{left:23px;background:var(--on-accent)}
 .dev .who{display:flex;gap:12px;align-items:center}
 .ava{width:46px;height:46px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font:700 18px var(--mono)}
 .dev p{margin:0;color:var(--fg2);font-size:14px}
@@ -198,17 +210,22 @@ function netSheet(){const n=networks(S.r4.ip,S.p);
   <div class="nlist"><button class="jump" id="jump">${t('jump')}</button>
   ${n.rows.map((r,i)=>`<div class="nitem${i===n.cur?' cur':''}"${i===n.cur?' id="mine"':''}><div class="t"><b>${r[0]}/${S.p}</b><small>#${i+1}</small></div>
    <div class="l"><em>${t('hosts')}</em><span>${r[1]}</span></div><div class="l"><em>${t('c_bc')}</em><span>${r[2]}</span></div></div>`).join('')}</div></div></div>`}
-function setSheet(){const ch=(name,val,cur,label)=>`<button class="chip" data-set="${name}" data-val="${val}" aria-pressed="${cur===val}">${label}</button>`;
+const SI={lang:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+ theme:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',start:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/>',
+ extra:'<path d="M4 6h16M4 12h16M4 18h10"/>'};
+const sico=k=>`<span class="sico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${SI[k]}</svg></span>`;
+function setSheet(){const seg=(name,cur,items)=>`<div class="segc" role="radiogroup" style="grid-template-columns:repeat(${items.length},1fr)">${items.map(([v,l])=>`<button role="radio" data-set="${name}" data-val="${v}" aria-checked="${cur===v}">${l}</button>`).join('')}</div>`;
   return `<div class="sheet"><div class="app"><header><button class="iconbtn" data-close aria-label="Back">${BACK}</button><h2>${t('set')}</h2></header>
-  <section class="card">
-   <div class="set"><span class="lbl">${t('lang')}</span><div class="opt">${ch('lang','tj',S.lang,'Тоҷикӣ')}${ch('lang','ru',S.lang,'Русский')}${ch('lang','en',S.lang,'English')}</div></div>
-   <div class="set"><span class="lbl">${t('theme')}</span><div class="opt">${ch('theme','dark',S.theme,t('dark'))}${ch('theme','light',S.theme,t('light'))}</div></div>
-   <div class="set"><span class="lbl">${t('start')}</span><div class="opt">${ch('start','v4',S.start,'IPv4')}${ch('start','v6',S.start,'IPv6')}</div></div>
-   <div class="set"><span class="lbl">${t('extra')}</span><div class="opt">${ch('extra',true,S.extraAlways,t('on'))}${ch('extra',false,S.extraAlways,t('off'))}</div></div>
+  <section class="card slist">
+   <div class="srow"><div class="shead">${sico('lang')}<span>${t('lang')}</span></div>${seg('lang',S.lang,[['tj','Тоҷикӣ'],['ru','Русский'],['en','English']])}</div>
+   <div class="srow"><div class="shead">${sico('theme')}<span>${t('theme')}</span></div>${seg('theme',S.theme,[['dark',t('dark')],['light',t('light')]])}</div>
+   <div class="srow"><div class="shead">${sico('start')}<span>${t('start')}</span></div>${seg('start',S.start,[['v4','IPv4'],['v6','IPv6']])}</div>
+   <div class="srow inline"><div class="shead">${sico('extra')}<span>${t('extra')}</span></div>
+    <button class="switch" role="switch" aria-checked="${S.extraAlways}" data-set="extra" data-val="${!S.extraAlways}" aria-label="${t('extra')}"><i></i></button></div>
   </section>
   <section class="card"><span class="lbl">${t('dev')}</span><div class="dev"><div class="who"><div class="ava">N</div><div><b>Neka</b><p>Telegram</p></div></div>
    <p>${t('devtxt')}</p><a class="tg" href="https://t.me/Neka_m" target="_blank" rel="noopener">${TG} ${t('order')}</a></div></section>
-  <section class="card"><span class="lbl">${t('about')}</span><div class="res">${row('NetMask',t('ver')+' 1.0.0')}${row(t('created'),'Neka')}${row('Telegram','t.me/Neka_m')}</div></section>
+  <section class="card"><span class="lbl">${t('about')}</span><div class="res">${row('NetMask',t('ver')+' 1.0.0')}${row(t('created'),'Neka')}</div></section>
   </div></div>`}
 
 function render(){
