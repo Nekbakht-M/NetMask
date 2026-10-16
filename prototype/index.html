@@ -38,11 +38,12 @@ select,input[type=text]{width:100%;height:48px;border-radius:10px;border:1px sol
 input.bad{border-color:var(--danger)}
 .err{color:var(--danger);font-size:13px;margin-top:6px}
 .actions{display:grid;grid-template-columns:1fr auto;gap:10px}
-.primary{height:50px;border:0;border-radius:12px;background:var(--accent);color:var(--on-accent);font:700 16px var(--sans);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
-.ghost{height:50px;padding:0 18px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--fg2);font:500 15px var(--sans);cursor:pointer}
+.primary{white-space:nowrap;padding:0 14px;height:50px;border:0;border-radius:12px;background:var(--accent);color:var(--on-accent);font:700 16px var(--sans);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.ghost{white-space:nowrap;height:50px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--fg2);font:500 15px var(--sans);cursor:pointer}
 .res{display:grid;gap:0}
 .row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 2px;border-bottom:1px solid var(--line);cursor:pointer}
 .row:last-child{border-bottom:0}
+.row.stack{grid-template-columns:1fr;gap:2px}.row.stack .v{text-align:left}
 .row .k{color:var(--fg2);font-size:13.5px}
 .row .v{font:500 14px var(--mono);text-align:right;word-break:break-all;font-variant-numeric:tabular-nums}
 .row.hi .v{color:var(--accent)}
@@ -101,7 +102,10 @@ tr.cur td{color:var(--accent)}
 .promo{position:fixed;inset:auto 0 0 0;z-index:30;padding:0 max(16px,env(safe-area-inset-left,0px)) calc(16px + env(safe-area-inset-bottom,0px))}
 .promo .in{max-width:440px;margin:0 auto;background:var(--raised);border:1px solid var(--line);border-radius:16px;padding:16px;display:grid;gap:10px;box-shadow:0 -8px 30px rgba(0,0,0,.35)}
 .promo .btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.foot{margin-top:18px;display:flex;justify-content:center}
+.foot{margin-top:14px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;text-decoration:none;color:var(--fg)}
+.foot .ft{display:grid;gap:2px;min-width:0}.foot .ft b{font:600 14px var(--sans)}.foot .ft span{color:var(--fg2);font-size:12.5px;line-height:1.35}
+.ava.sm{width:38px;height:38px;font-size:15px}
+.tgc{width:40px;height:40px;border-radius:12px;background:#2AABEE;color:#fff;display:grid;place-items:center}
 .proto{font-size:12px;color:var(--fg2);text-align:center;padding-top:8px}
 @media (prefers-reduced-motion:no-preference){.row,.chip,.seg button{transition:background .15s,color .15s}}
 </style>
@@ -195,7 +199,7 @@ const t=k=>T[S.lang][k];
 const range=c=>c==='A'?[8,32]:c==='B'?[16,32]:c==='C'?[24,32]:[1,32];
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-function row(k,v,hi){return `<div class="row${hi?' hi':''}" data-copy="${esc(v)}" role="button" tabindex="0"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`}
+function row(k,v,hi){return `<div class="row${hi?' hi':''}${String(v).length>22?' stack':''}" data-copy="${esc(v)}" role="button" tabindex="0"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`}
 function v4(){const [lo,hi]=range(S.cls);if(S.p<lo)S.p=lo;
   let opts='';for(let p=32;p>=lo;p--)opts+=`<option value="${p}"${p===S.p?' selected':''}>${toIp(maskInt(p))} /${p}</option>`;
   const r=S.r4,more=S.showMore||S.extraAlways;
@@ -268,7 +272,7 @@ function render(){
    <header><div class="logo">${ICON}</div><div class="brand">NetMask</div><button class="iconbtn" id="gear" aria-label="${t('set')}">${GEAR}</button></header>
    <div class="seg" role="tablist"><button role="tab" data-tab="v4" aria-selected="${S.tab==='v4'}">IPv4</button><button role="tab" data-tab="v6" aria-selected="${S.tab==='v6'}">IPv6</button></div>
    ${S.tab==='v4'?v4():v6()}
-   <div class="foot"><a class="by" href="https://t.me/Neka_m" target="_blank" rel="noopener">${t('madeby')} ${TG}</a></div>
+   <a class="foot" href="https://t.me/Neka_m" target="_blank" rel="noopener"><div class="ava sm">N</div><div class="ft"><b>${t('madeby')}</b><span>${t('devtxt')}</span></div><span class="tgc">${TG}</span></a>
    <div class="proto">Прототип: значения можно копировать нажатием на строку.</div></div>
    ${S.sheet==='nets'?netSheet():''}${S.xls?xlsModal():''}${S.share?shareModal():''}${S.sheet==='set'?setSheet():''}
    ${showPromo?`<div class="promo"><div class="in"><b>${t('promoT')}</b><span style="color:var(--fg2)">${t('promoB')}</span><div class="btns"><a class="tg" href="https://t.me/Neka_m" target="_blank" rel="noopener">${TG} ${t('write')}</a><button class="ghost" id="never">${t('never')}</button></div></div></div>`:''}`;
