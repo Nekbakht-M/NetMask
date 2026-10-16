@@ -59,6 +59,18 @@ tr.cur td{color:var(--accent)}
 .set{display:grid;gap:6px}
 .opt{display:flex;gap:8px;flex-wrap:wrap}
 .dev{border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:10px;background:linear-gradient(135deg,var(--surface),var(--raised))}
+.nhead{display:grid;gap:2px;flex:1;min-width:0}
+.nhead h2{font-size:17px}.nhead span{color:var(--fg2);font-size:13px;font-family:var(--mono)}
+.nlist{display:grid;gap:8px}
+.nitem{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:4px;font-family:var(--mono);font-size:13.5px;font-variant-numeric:tabular-nums;min-width:0}
+.nitem.cur{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+.nitem .t{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.nitem .t b{font-size:15px;color:var(--fg)}.nitem .t small{color:var(--fg2);font-size:12px}
+.nitem .l{color:var(--fg2);display:grid;grid-template-columns:66px minmax(0,1fr);gap:6px;align-items:baseline}.nitem .l em{font-style:normal;font-family:var(--sans);font-size:12px;overflow:hidden;text-overflow:ellipsis}
+.nitem .l span{color:var(--fg);font-size:13px;overflow-wrap:anywhere}
+.jump{height:40px;padding:0 14px;border-radius:10px;border:1px solid var(--accent);background:transparent;color:var(--accent);font:600 14px var(--sans);cursor:pointer;justify-self:start}
+.by{display:inline-flex;align-items:center;gap:6px;color:var(--fg2);text-decoration:none;font:500 13px var(--sans);padding:8px 12px;border-radius:20px;border:1px solid var(--line)}
+.by svg{color:#2AABEE}
 .dev .who{display:flex;gap:12px;align-items:center}
 .ava{width:46px;height:46px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font:700 18px var(--mono)}
 .dev p{margin:0;color:var(--fg2);font-size:14px}
@@ -67,7 +79,7 @@ tr.cur td{color:var(--accent)}
 .promo{position:fixed;inset:auto 0 0 0;z-index:30;padding:0 max(16px,env(safe-area-inset-left,0px)) calc(16px + env(safe-area-inset-bottom,0px))}
 .promo .in{max-width:440px;margin:0 auto;background:var(--raised);border:1px solid var(--line);border-radius:16px;padding:16px;display:grid;gap:10px;box-shadow:0 -8px 30px rgba(0,0,0,.35)}
 .promo .btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.foot{margin-top:18px;text-align:center;color:var(--fg2);font-size:12px;font-family:var(--mono)}
+.foot{margin-top:18px;display:flex;justify-content:center}
 .proto{font-size:12px;color:var(--fg2);text-align:center;padding-top:8px}
 @media (prefers-reduced-motion:no-preference){.row,.chip,.seg button{transition:background .15s,color .15s}}
 </style>
@@ -88,7 +100,7 @@ tj:{v4t:'Ҳисобкунаки зершабакаи IPv4',v6t:'Ҳисобкун
  r_mask:'Ниқоби зершабака',r_wild:'Ниқоби wildcard',r_bin:'Ниқоби дуӣ',r_class:'Синфи IP',r_cidr:'Нотатсияи CIDR',r_type:'Навъи IP',r_short:'Кӯтоҳ',
  priv:'Хусусӣ',pub:'Ҷамъиятӣ',more:'Муфассал ▾',less:'Камтар ▴',all:'Ҳамаи шабакаҳо',share:'Мубодила',
  r6_full:'Суроғаи пурраи IP',r6_total:'Шумораи умумии суроғаҳо',r6_net:'Шабака',r6_range:'Диапазони IP',
- nets:(n,p,b)=>`Ҳамаи ${n} шабакаи имконпазири /${p} барои ${b}`,c_net:'Суроғаи шабака',c_range:'Хостҳои истифодашаванда',c_bc:'Пахшкунӣ',
+ netsT:p=>`Ҳамаи шабакаҳо /${p}`,netsS:(n,b)=>`${n} шабака · ${b}`,jump:'Ба шабакаи ман',hosts:'Хостҳо',madeby:'Таҳия: Neka',nets:(n,p,b)=>`Ҳамаи ${n} шабакаи имконпазири /${p} барои ${b}`,c_net:'Суроғаи шабака',c_range:'Хостҳои истифодашаванда',c_bc:'Пахшкунӣ',
  set:'Танзимот',lang:'Забон',theme:'Мавзӯъ',dark:'Торик',light:'Равшан',start:'Бахш ҳангоми оғоз',extra:'Ҳамеша майдонҳои иловагиро нишон диҳед',on:'Фаъол',off:'Хомӯш',
  dev:'Таҳиягар',devtxt:'Сомонаҳо, барномаҳои Android ва нармафзор барои тиҷорат месозам.',order:'Фармоиш дар Telegram',about:'Дар бораи барнома',created:'Эҷодкор',ver:'Версия',
  promoT:'Барнома маъқул шуд?',promoB:'Ман чунин барномаҳо ва сомонаҳоро бо фармоиш месозам.',write:'Навиштан',never:'Дигар нишон надиҳед',copied:'Нусха гирифта шуд',na:'Нест'},
@@ -98,7 +110,7 @@ ru:{v4t:'Калькулятор подсети IPv4',v6t:'Калькулятор
  r_mask:'Маска подсети',r_wild:'Wildcard-маска',r_bin:'Двоичная маска подсети',r_class:'Класс IP',r_cidr:'Нотация CIDR',r_type:'Тип IP',r_short:'Короткий',
  priv:'Частный',pub:'Публичный',more:'Подробнее ▾',less:'Скрыть ▴',all:'Все сети',share:'Поделиться',
  r6_full:'Полный IP-адрес',r6_total:'Всего IP-адресов',r6_net:'Сеть',r6_range:'Диапазон IP',
- nets:(n,p,b)=>`Все ${n} возможных /${p} сетей для ${b}`,c_net:'Сетевой адрес',c_range:'Диапазон хостов',c_bc:'Широковещательный',
+ netsT:p=>`Все сети /${p}`,netsS:(n,b)=>`${n} сетей · ${b}`,jump:'К моей сети',hosts:'Хосты',madeby:'Создатель: Neka',nets:(n,p,b)=>`Все ${n} возможных /${p} сетей для ${b}`,c_net:'Сетевой адрес',c_range:'Диапазон хостов',c_bc:'Широковещательный',
  set:'Настройки',lang:'Язык',theme:'Тема',dark:'Тёмная',light:'Светлая',start:'Раздел при запуске',extra:'Всегда показывать доп. поля',on:'Вкл',off:'Выкл',
  dev:'Разработчик',devtxt:'Создаю сайты, Android-приложения и программы для бизнеса.',order:'Заказать в Telegram',about:'О программе',created:'Создатель',ver:'Версия',
  promoT:'Понравилось приложение?',promoB:'Я делаю такие приложения и сайты на заказ.',write:'Написать',never:'Не показывать',copied:'Скопировано',na:'Нет'},
@@ -108,7 +120,7 @@ en:{v4t:'IPv4 Subnet Calculator',v6t:'IPv6 Subnet Calculator',cls:'Network class
  r_mask:'Subnet Mask',r_wild:'Wildcard Mask',r_bin:'Binary Subnet Mask',r_class:'IP Class',r_cidr:'CIDR Notation',r_type:'IP Type',r_short:'Short',
  priv:'Private',pub:'Public',more:'More details ▾',less:'Less ▴',all:'All networks',share:'Share',
  r6_full:'Full IP Address',r6_total:'Total IP Addresses',r6_net:'Network',r6_range:'IP Range',
- nets:(n,p,b)=>`All ${n} of the possible /${p} networks for ${b}`,c_net:'Network Address',c_range:'Usable Host Range',c_bc:'Broadcast',
+ netsT:p=>`All /${p} networks`,netsS:(n,b)=>`${n} networks · ${b}`,jump:'Go to my network',hosts:'Hosts',madeby:'Made by Neka',nets:(n,p,b)=>`All ${n} of the possible /${p} networks for ${b}`,c_net:'Network Address',c_range:'Usable Host Range',c_bc:'Broadcast',
  set:'Settings',lang:'Language',theme:'Theme',dark:'Dark',light:'Light',start:'Open on start',extra:'Always show extra fields',on:'On',off:'Off',
  dev:'Developer',devtxt:'I build websites, Android apps and software for business.',order:'Order on Telegram',about:'About',created:'Created by',ver:'Version',
  promoT:'Like the app?',promoB:'I build apps and websites like this to order.',write:'Message me',never:"Don't show again",copied:'Copied',na:'N/A'}
@@ -137,7 +149,7 @@ function networks(ip,p){
   const parent=Math.max(0,8*Math.floor((p-1)/8));const bits=Math.min(p-parent,8);const count=2**bits;
   const size=2**(32-p);const pn=Math.floor(toInt(ip)/2**(32-parent))*2**(32-parent);
   const oct=ip.split('.');const base=parent===0?'*.*.*.*':oct.slice(0,parent/8).join('.')+'.*'.repeat(4-parent/8);
-  const rows=[];for(let i=0;i<count;i++){const net=pn+i*size,bc=net+size-1;rows.push([toIp(net),p>=31?'—':`${toIp(net+1)} - ${toIp(bc-1)}`,toIp(bc)])}
+  const rows=[];for(let i=0;i<count;i++){const net=pn+i*size,bc=net+size-1;rows.push([toIp(net),p>=31?'—':`${toIp(net+1)} – ${toIp(bc-1)}`,toIp(bc)])}
   return {base,rows,cur:Math.floor((toInt(ip)-pn)/size)};
 }
 /* ---------- IPv6 math ---------- */
@@ -182,9 +194,10 @@ function v6(){let opts='';for(let p=128;p>=1;p--)opts+=`<option value="${p}"${p=
   <div class="actions"><button class="primary" id="go6">${t('calc')} ${PLAY}</button><button class="ghost" id="clr6">${t('clear')}</button></div></section>
   ${r?`<section class="card"><div class="res">${row(t('r_ip'),r.ip)}${row(t('r6_full'),r.full)}${row(t('r6_total'),r.total)}${row(t('r6_net'),r.net,1)}${row(t('r6_range'),r.range)}</div></section>`:''}`}
 function netSheet(){const n=networks(S.r4.ip,S.p);
-  return `<div class="sheet"><div class="app"><header><button class="iconbtn" data-close aria-label="Back">${BACK}</button><h2>${t('nets')(n.rows.length,S.p,n.base)}</h2></header>
-  <div class="tbl"><table><thead><tr><th>${t('c_net')}</th><th>${t('c_range')}</th><th>${t('c_bc')}</th></tr></thead><tbody>
-  ${n.rows.map((r,i)=>`<tr${i===n.cur?' class="cur"':''}><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</tbody></table></div></div></div>`}
+  return `<div class="sheet"><div class="app"><header><button class="iconbtn" data-close aria-label="Back">${BACK}</button><div class="nhead"><h2>${t('netsT')(S.p)}</h2><span>${t('netsS')(n.rows.length,n.base)}</span></div></header>
+  <div class="nlist"><button class="jump" id="jump">${t('jump')}</button>
+  ${n.rows.map((r,i)=>`<div class="nitem${i===n.cur?' cur':''}"${i===n.cur?' id="mine"':''}><div class="t"><b>${r[0]}/${S.p}</b><small>#${i+1}</small></div>
+   <div class="l"><em>${t('hosts')}</em><span>${r[1]}</span></div><div class="l"><em>${t('c_bc')}</em><span>${r[2]}</span></div></div>`).join('')}</div></div></div>`}
 function setSheet(){const ch=(name,val,cur,label)=>`<button class="chip" data-set="${name}" data-val="${val}" aria-pressed="${cur===val}">${label}</button>`;
   return `<div class="sheet"><div class="app"><header><button class="iconbtn" data-close aria-label="Back">${BACK}</button><h2>${t('set')}</h2></header>
   <section class="card">
@@ -193,9 +206,9 @@ function setSheet(){const ch=(name,val,cur,label)=>`<button class="chip" data-se
    <div class="set"><span class="lbl">${t('start')}</span><div class="opt">${ch('start','v4',S.start,'IPv4')}${ch('start','v6',S.start,'IPv6')}</div></div>
    <div class="set"><span class="lbl">${t('extra')}</span><div class="opt">${ch('extra',true,S.extraAlways,t('on'))}${ch('extra',false,S.extraAlways,t('off'))}</div></div>
   </section>
-  <section class="card"><span class="lbl">${t('dev')}</span><div class="dev"><div class="who"><div class="ava">N</div><div><b>Neka</b><p>@Neka_m</p></div></div>
+  <section class="card"><span class="lbl">${t('dev')}</span><div class="dev"><div class="who"><div class="ava">N</div><div><b>Neka</b><p>Telegram</p></div></div>
    <p>${t('devtxt')}</p><a class="tg" href="https://t.me/Neka_m" target="_blank" rel="noopener">${TG} ${t('order')}</a></div></section>
-  <section class="card"><span class="lbl">${t('about')}</span><div class="res">${row('NetMask',t('ver')+' 1.0.0')}${row(t('created'),'Neka · @Neka_m')}</div></section>
+  <section class="card"><span class="lbl">${t('about')}</span><div class="res">${row('NetMask',t('ver')+' 1.0.0')}${row(t('created'),'Neka')}${row('Telegram','t.me/Neka_m')}</div></section>
   </div></div>`}
 
 function render(){
@@ -205,7 +218,7 @@ function render(){
    <header><div class="logo">${ICON}</div><div class="brand">NetMask</div><button class="iconbtn" id="gear" aria-label="${t('set')}">${GEAR}</button></header>
    <div class="seg" role="tablist"><button role="tab" data-tab="v4" aria-selected="${S.tab==='v4'}">IPv4</button><button role="tab" data-tab="v6" aria-selected="${S.tab==='v6'}">IPv6</button></div>
    ${S.tab==='v4'?v4():v6()}
-   <div class="foot">NetMask · Neka · @Neka_m</div>
+   <div class="foot"><a class="by" href="https://t.me/Neka_m" target="_blank" rel="noopener">${t('madeby')} ${TG}</a></div>
    <div class="proto">Прототип: значения можно копировать нажатием на строку.</div></div>
    ${S.sheet==='nets'?netSheet():''}${S.sheet==='set'?setSheet():''}
    ${showPromo?`<div class="promo"><div class="in"><b>${t('promoT')}</b><span style="color:var(--fg2)">${t('promoB')}</span><div class="btns"><a class="tg" href="https://t.me/Neka_m" target="_blank" rel="noopener">${TG} ${t('write')}</a><button class="ghost" id="never">${t('never')}</button></div></div></div>`:''}`;
@@ -223,18 +236,35 @@ document.addEventListener('click',e=>{const el=e.target.closest('button,[data-co
     if(parse6(S.ip6)===null){S.err6=true;S.r6=null}else{S.err6=false;S.r6=calc6(S.ip6,S.p6);counted()}return render()}
   if(el.id==='clr6'){S.ip6='';S.r6=null;S.err6=false;return render()}
   if(el.id==='more'){S.showMore=!S.showMore;return render()}
-  if(el.id==='nets'){S.sheet='nets';return render()}
+  if(el.id==='nets'){S.sheet='nets';render();const m=document.getElementById('mine');if(m)m.scrollIntoView({block:'center'});return}
+  if(el.id==='jump'){const m=document.getElementById('mine');if(m)m.scrollIntoView({block:'center',behavior:'smooth'});return}
   if(el.id==='gear'){S.sheet='set';return render()}
   if(el.hasAttribute('data-close')){S.sheet=null;return render()}
   if(el.id==='never'){S.promoOff=true;S.promo=false;store.set('promoOff',true);return render()}
   if(el.dataset.set){let v=el.dataset.val;if(v==='true')v=true;if(v==='false')v=false;const k=el.dataset.set;
     if(k==='lang')S.lang=v;if(k==='theme')S.theme=v;if(k==='start')S.start=v;if(k==='extra')S.extraAlways=v;store.set(k,v);return render()}
-  if(el.id==='share'){const r=S.r4;const txt=`${r.short}\n${t('r_net')}: ${r.net}\n${t('r_range')}: ${r.range||t('na')}\n${t('r_bc')}: ${r.bc}\n${t('r_mask')}: ${r.mask}\n— NetMask by @Neka_m`;copy(txt);return}
+  if(el.id==='share'){const r=S.r4;const txt=`${r.short}\n${t('r_net')}: ${r.net}\n${t('r_range')}: ${r.range||t('na')}\n${t('r_bc')}: ${r.bc}\n${t('r_mask')}: ${r.mask}\n— NetMask · t.me/Neka_m`;copy(txt);return}
   if(el.dataset.copy!==undefined){copy(el.dataset.copy)}
 });
 document.addEventListener('keydown',e=>{if(e.key==='Enter'){if(e.target.id==='ip4')document.getElementById('go4').click();if(e.target.id==='ip6')document.getElementById('go6').click();
   if(e.target.dataset&&e.target.dataset.copy!==undefined)copy(e.target.dataset.copy)}});
 document.addEventListener('change',e=>{if(e.target.id==='sub'){S.p=+e.target.value}if(e.target.id==='p6'){S.p6=+e.target.value}});
+/* IPv4 input: dots are added automatically, a typed dot is never doubled, comma/space count as dot */
+let prevIp='';
+function fmtIp(raw,adding){
+  let v=raw.replace(/[,\s]/g,'.').replace(/[^0-9.]/g,'').replace(/\.{2,}/g,'.').replace(/^\./,'');
+  const parts=[];let cur='';
+  for(const ch of v){if(ch==='.'){if(parts.length<3){parts.push(cur);cur=''}continue}
+    if(cur.length===3||(cur==='0')||(cur.length&&+(cur+ch)>255)){if(parts.length<3){parts.push(cur);cur=ch}continue}
+    cur+=ch}
+  let out=[...parts,cur].join('.');if(v.endsWith('.')&&parts.length<=3&&!out.endsWith('.')&&cur==='')out+='.';
+  const last=cur;
+  if(adding&&parts.length<3&&last&&(last.length===3||last==='0'||+last*10>255))out+='.';
+  return out;
+}
+document.addEventListener('input',e=>{if(e.target.id!=='ip4')return;const el=e.target;const adding=el.value.length>prevIp.length;
+  const f=fmtIp(el.value,adding);el.value=f;prevIp=f;el.classList.remove('bad')});
+document.addEventListener('focusin',e=>{if(e.target.id==='ip4')prevIp=e.target.value});
 function copy(txt){const done=()=>toast(t('copied'));try{navigator.clipboard.writeText(txt).then(done,done)}catch(e){done()}}
 render();
 </script>
