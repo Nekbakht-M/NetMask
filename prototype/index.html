@@ -69,6 +69,15 @@ tr.cur td{color:var(--accent)}
 .nitem .t b{font-size:15px;color:var(--fg)}.nitem .t small{color:var(--fg2);font-size:12px}
 .nitem .l{color:var(--fg2);display:grid;grid-template-columns:66px minmax(0,1fr);gap:6px;align-items:baseline}.nitem .l em{font-style:normal;font-family:var(--sans);font-size:12px;overflow:hidden;text-overflow:ellipsis}
 .nitem .l span{color:var(--fg);font-size:13px;overflow-wrap:anywhere}
+.ntools{display:flex;gap:8px;flex-wrap:wrap}
+.xlsbtn{height:40px;padding:0 14px;border-radius:10px;border:0;background:#1D6F42;color:#fff;font:600 14px var(--sans);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.modal{position:fixed;inset:0;z-index:35;background:rgba(0,0,0,.55);display:grid;place-items:end center;padding:0 max(16px,env(safe-area-inset-left,0px)) calc(16px + env(safe-area-inset-bottom,0px))}
+.modal .in{width:100%;max-width:440px;background:var(--raised);border:1px solid var(--line);border-radius:16px;padding:16px;display:grid;gap:12px}
+.file{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
+.file .x{width:40px;height:40px;border-radius:8px;background:#1D6F42;color:#fff;display:grid;place-items:center;font:700 13px var(--mono);flex:none}
+.file div{min-width:0}.file b{display:block;font:600 12.5px var(--mono);overflow-wrap:anywhere}.file small{color:var(--fg2)}
+.prev{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+.prev table{font-size:12px}.prev th{background:#1D6F42;color:#fff;position:static}
 .jump{height:40px;padding:0 14px;border-radius:10px;border:1px solid var(--accent);background:transparent;color:var(--accent);font:600 14px var(--sans);cursor:pointer;justify-self:start}
 .by{display:inline-flex;align-items:center;gap:6px;color:var(--fg2);text-decoration:none;font:500 13px var(--sans);padding:8px 12px;border-radius:20px;border:1px solid var(--line)}
 .by svg{color:#2AABEE}
@@ -101,6 +110,7 @@ tr.cur td{color:var(--accent)}
 <script>
 const ICON=`<svg viewBox="0 0 108 108"><rect width="108" height="108" fill="#0F172A"/><rect x="16" y="24" width="76" height="60" rx="8" fill="#1B2336" stroke="#334155" stroke-width="2"/><g fill="#475569"><circle cx="26" cy="33" r="2.5"/><circle cx="34" cy="33" r="2.5"/><circle cx="42" cy="33" r="2.5"/></g><text x="24" y="66" font-family="JetBrains Mono,monospace" font-weight="700" font-size="20" fill="#22C55E">&gt;_</text><text x="54" y="66" font-family="JetBrains Mono,monospace" font-weight="700" font-size="20" fill="#F1F5F9">IP</text></svg>`;
 const GEAR=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`;
+const XLS=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M9 13l4 5M13 13l-4 5"/></svg>`;
 const BACK=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>`;
 const PLAY=`<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>`;
 const TG=`<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.7 19.4c-.2 1-.9 1.3-1.7.8l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.2 1.8 11.7c-1-.3-1-1 .2-1.5l18.5-7.1c.9-.3 1.6.2 1.4 1.2z"/></svg>`;
@@ -112,7 +122,7 @@ tj:{v4t:'Ҳисобкунаки зершабакаи IPv4',v6t:'Ҳисобкун
  r_mask:'Ниқоби зершабака',r_wild:'Ниқоби wildcard',r_bin:'Ниқоби дуӣ',r_class:'Синфи IP',r_cidr:'Нотатсияи CIDR',r_type:'Навъи IP',r_short:'Кӯтоҳ',
  priv:'Хусусӣ',pub:'Ҷамъиятӣ',more:'Муфассал ▾',less:'Камтар ▴',all:'Ҳамаи шабакаҳо',share:'Мубодила',
  r6_full:'Суроғаи пурраи IP',r6_total:'Шумораи умумии суроғаҳо',r6_net:'Шабака',r6_range:'Диапазони IP',
- netsT:p=>`Ҳамаи шабакаҳо /${p}`,netsS:(n,b)=>`${n} шабака · ${b}`,jump:'Ба шабакаи ман',hosts:'Хостҳо',madeby:'Таҳия: Neka',nets:(n,p,b)=>`Ҳамаи ${n} шабакаи имконпазири /${p} барои ${b}`,c_net:'Суроғаи шабака',c_range:'Хостҳои истифодашаванда',c_bc:'Пахшкунӣ',
+ netsT:p=>`Ҳамаи шабакаҳо /${p}`,xls:'Мубодила (Excel)',xlsT:'Файли Excel омода аст',xlsB:'Дар барнома ин тугма менюи «Мубодила»-и Android-ро мекушояд: Telegram, WhatsApp, почта ё нигоҳ доштан.',copyT:'Нусха барои Excel',close:'Пӯшидан',netsS:(n,b)=>`${n} шабака · ${b}`,jump:'Ба шабакаи ман',hosts:'Хостҳо',madeby:'Таҳия: Neka',nets:(n,p,b)=>`Ҳамаи ${n} шабакаи имконпазири /${p} барои ${b}`,c_net:'Суроғаи шабака',c_range:'Хостҳои истифодашаванда',c_bc:'Пахшкунӣ',
  set:'Танзимот',lang:'Забон',theme:'Мавзӯъ',dark:'Торик',light:'Равшан',start:'Бахш ҳангоми оғоз',extra:'Ҳамеша майдонҳои иловагиро нишон диҳед',on:'Фаъол',off:'Хомӯш',
  dev:'Таҳиягар',devtxt:'Сомонаҳо, барномаҳои Android ва нармафзор барои тиҷорат месозам.',order:'Фармоиш дар Telegram',about:'Дар бораи барнома',created:'Эҷодкор',ver:'Версия',
  promoT:'Барнома маъқул шуд?',promoB:'Ман чунин барномаҳо ва сомонаҳоро бо фармоиш месозам.',write:'Навиштан',never:'Дигар нишон надиҳед',copied:'Нусха гирифта шуд',na:'Нест'},
@@ -122,7 +132,7 @@ ru:{v4t:'Калькулятор подсети IPv4',v6t:'Калькулятор
  r_mask:'Маска подсети',r_wild:'Wildcard-маска',r_bin:'Двоичная маска подсети',r_class:'Класс IP',r_cidr:'Нотация CIDR',r_type:'Тип IP',r_short:'Короткий',
  priv:'Частный',pub:'Публичный',more:'Подробнее ▾',less:'Скрыть ▴',all:'Все сети',share:'Поделиться',
  r6_full:'Полный IP-адрес',r6_total:'Всего IP-адресов',r6_net:'Сеть',r6_range:'Диапазон IP',
- netsT:p=>`Все сети /${p}`,netsS:(n,b)=>`${n} сетей · ${b}`,jump:'К моей сети',hosts:'Хосты',madeby:'Создатель: Neka',nets:(n,p,b)=>`Все ${n} возможных /${p} сетей для ${b}`,c_net:'Сетевой адрес',c_range:'Диапазон хостов',c_bc:'Широковещательный',
+ netsT:p=>`Все сети /${p}`,xls:'Поделиться (Excel)',xlsT:'Файл Excel готов',xlsB:'В приложении эта кнопка откроет меню «Поделиться» Android: Telegram, WhatsApp, почта или сохранить в файлы.',copyT:'Копировать для Excel',close:'Закрыть',netsS:(n,b)=>`${n} сетей · ${b}`,jump:'К моей сети',hosts:'Хосты',madeby:'Создатель: Neka',nets:(n,p,b)=>`Все ${n} возможных /${p} сетей для ${b}`,c_net:'Сетевой адрес',c_range:'Диапазон хостов',c_bc:'Широковещательный',
  set:'Настройки',lang:'Язык',theme:'Тема',dark:'Тёмная',light:'Светлая',start:'Раздел при запуске',extra:'Всегда показывать доп. поля',on:'Вкл',off:'Выкл',
  dev:'Разработчик',devtxt:'Создаю сайты, Android-приложения и программы для бизнеса.',order:'Заказать в Telegram',about:'О программе',created:'Создатель',ver:'Версия',
  promoT:'Понравилось приложение?',promoB:'Я делаю такие приложения и сайты на заказ.',write:'Написать',never:'Не показывать',copied:'Скопировано',na:'Нет'},
@@ -132,7 +142,7 @@ en:{v4t:'IPv4 Subnet Calculator',v6t:'IPv6 Subnet Calculator',cls:'Network class
  r_mask:'Subnet Mask',r_wild:'Wildcard Mask',r_bin:'Binary Subnet Mask',r_class:'IP Class',r_cidr:'CIDR Notation',r_type:'IP Type',r_short:'Short',
  priv:'Private',pub:'Public',more:'More details ▾',less:'Less ▴',all:'All networks',share:'Share',
  r6_full:'Full IP Address',r6_total:'Total IP Addresses',r6_net:'Network',r6_range:'IP Range',
- netsT:p=>`All /${p} networks`,netsS:(n,b)=>`${n} networks · ${b}`,jump:'Go to my network',hosts:'Hosts',madeby:'Made by Neka',nets:(n,p,b)=>`All ${n} of the possible /${p} networks for ${b}`,c_net:'Network Address',c_range:'Usable Host Range',c_bc:'Broadcast',
+ netsT:p=>`All /${p} networks`,xls:'Share (Excel)',xlsT:'Excel file is ready',xlsB:'In the app this button opens the Android share menu: Telegram, WhatsApp, email or save to files.',copyT:'Copy for Excel',close:'Close',netsS:(n,b)=>`${n} networks · ${b}`,jump:'Go to my network',hosts:'Hosts',madeby:'Made by Neka',nets:(n,p,b)=>`All ${n} of the possible /${p} networks for ${b}`,c_net:'Network Address',c_range:'Usable Host Range',c_bc:'Broadcast',
  set:'Settings',lang:'Language',theme:'Theme',dark:'Dark',light:'Light',start:'Open on start',extra:'Always show extra fields',on:'On',off:'Off',
  dev:'Developer',devtxt:'I build websites, Android apps and software for business.',order:'Order on Telegram',about:'About',created:'Created by',ver:'Version',
  promoT:'Like the app?',promoB:'I build apps and websites like this to order.',write:'Message me',never:"Don't show again",copied:'Copied',na:'N/A'}
@@ -207,13 +217,22 @@ function v6(){let opts='';for(let p=128;p>=1;p--)opts+=`<option value="${p}"${p=
   ${r?`<section class="card"><div class="res">${row(t('r_ip'),r.ip)}${row(t('r6_full'),r.full)}${row(t('r6_total'),r.total)}${row(t('r6_net'),r.net,1)}${row(t('r6_range'),r.range)}</div></section>`:''}`}
 function netSheet(){const n=networks(S.r4.ip,S.p);
   return `<div class="sheet"><div class="app"><header><button class="iconbtn" data-close aria-label="Back">${BACK}</button><div class="nhead"><h2>${t('netsT')(S.p)}</h2><span>${t('netsS')(n.rows.length,n.base)}</span></div></header>
-  <div class="nlist"><button class="jump" id="jump">${t('jump')}</button>
+  <div class="nlist"><div class="ntools"><button class="jump" id="jump">${t('jump')}</button><button class="xlsbtn" id="xls">${XLS} ${t('xls')}</button></div>
   ${n.rows.map((r,i)=>`<div class="nitem${i===n.cur?' cur':''}"${i===n.cur?' id="mine"':''}><div class="t"><b>${r[0]}/${S.p}</b><small>#${i+1}</small></div>
    <div class="l"><em>${t('hosts')}</em><span>${r[1]}</span></div><div class="l"><em>${t('c_bc')}</em><span>${r[2]}</span></div></div>`).join('')}</div></div></div>`}
 const SI={lang:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
  theme:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',start:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/>',
  extra:'<path d="M4 6h16M4 12h16M4 18h10"/>'};
 const sico=k=>`<span class="sico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${SI[k]}</svg></span>`;
+function xlsData(){const n=networks(S.r4.ip,S.p);return {n,name:`NetMask_${n.rows[0][0]}_${S.p}.xlsx`,
+  head:['#',t('c_net'),'CIDR',t('c_range'),t('c_bc'),t('r_mask'),t('r_usable')],
+  rows:n.rows.map((r,i)=>[i+1,r[0],'/'+S.p,r[1],r[2],toIp(maskInt(S.p)),S.p>=31?0:2**(32-S.p)-2])}}
+function xlsModal(){const d=xlsData();
+  return `<div class="modal" id="xlsbg"><div class="in" role="dialog" aria-label="${t('xlsT')}"><b>${t('xlsT')}</b>
+  <div class="file"><div class="x">XLS</div><div><b>${d.name}</b><small>${d.rows.length} × ${d.head.length}</small></div></div>
+  <div class="prev"><table><thead><tr>${d.head.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${d.rows.slice(0,4).map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}<tr><td colspan="${d.head.length}">…</td></tr></tbody></table></div>
+  <span style="color:var(--fg2);font-size:13.5px">${t('xlsB')}</span>
+  <div class="promo-btns" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><button class="sec" id="xlscopy">${t('copyT')}</button><button class="ghost" id="xlsclose">${t('close')}</button></div></div></div>`}
 function setSheet(){const seg=(name,cur,items)=>`<div class="segc" role="radiogroup" style="grid-template-columns:repeat(${items.length},1fr)">${items.map(([v,l])=>`<button role="radio" data-set="${name}" data-val="${v}" aria-checked="${cur===v}">${l}</button>`).join('')}</div>`;
   return `<div class="sheet"><div class="app"><header><button class="iconbtn" data-close aria-label="Back">${BACK}</button><h2>${t('set')}</h2></header>
   <section class="card slist">
@@ -237,7 +256,7 @@ function render(){
    ${S.tab==='v4'?v4():v6()}
    <div class="foot"><a class="by" href="https://t.me/Neka_m" target="_blank" rel="noopener">${t('madeby')} ${TG}</a></div>
    <div class="proto">Прототип: значения можно копировать нажатием на строку.</div></div>
-   ${S.sheet==='nets'?netSheet():''}${S.sheet==='set'?setSheet():''}
+   ${S.sheet==='nets'?netSheet():''}${S.xls?xlsModal():''}${S.sheet==='set'?setSheet():''}
    ${showPromo?`<div class="promo"><div class="in"><b>${t('promoT')}</b><span style="color:var(--fg2)">${t('promoB')}</span><div class="btns"><a class="tg" href="https://t.me/Neka_m" target="_blank" rel="noopener">${TG} ${t('write')}</a><button class="ghost" id="never">${t('never')}</button></div></div></div>`:''}`;
 }
 function toast(msg){const d=document.createElement('div');d.className='toast';d.textContent=msg;document.body.appendChild(d);setTimeout(()=>d.remove(),1400)}
@@ -254,9 +273,12 @@ document.addEventListener('click',e=>{const el=e.target.closest('button,[data-co
   if(el.id==='clr6'){S.ip6='';S.r6=null;S.err6=false;return render()}
   if(el.id==='more'){S.showMore=!S.showMore;return render()}
   if(el.id==='nets'){S.sheet='nets';render();const m=document.getElementById('mine');if(m)m.scrollIntoView({block:'center'});return}
+  if(el.id==='xls'){S.xls=true;return render()}
+  if(el.id==='xlsclose'){S.xls=false;return render()}
+  if(el.id==='xlscopy'){const d=xlsData();copy([d.head,...d.rows].map(r=>r.join('\t')).join('\n'));return}
   if(el.id==='jump'){const m=document.getElementById('mine');if(m)m.scrollIntoView({block:'center',behavior:'smooth'});return}
   if(el.id==='gear'){S.sheet='set';return render()}
-  if(el.hasAttribute('data-close')){S.sheet=null;return render()}
+  if(el.hasAttribute('data-close')){S.sheet=null;S.xls=false;return render()}
   if(el.id==='never'){S.promoOff=true;S.promo=false;store.set('promoOff',true);return render()}
   if(el.dataset.set){let v=el.dataset.val;if(v==='true')v=true;if(v==='false')v=false;const k=el.dataset.set;
     if(k==='lang')S.lang=v;if(k==='theme')S.theme=v;if(k==='start')S.start=v;if(k==='extra')S.extraAlways=v;store.set(k,v);return render()}
