@@ -169,7 +169,7 @@ function calc4(ip,p){
   const hex='0x'+n.toString(16).padStart(8,'0');
   const h=n.toString(16).padStart(8,'0');
   return {ip,net:toIp(net),range:usable?`${toIp(net+1)} - ${toIp(bc-1)}`:null,bc:toIp(bc),total:size,usable,mask:toIp(m),wild:toIp(2**32-1-m),bin:b,
-    cls:ipClass(ip),cidr:'/'+p,priv:isPrivate(n),short:`${ip} /${p}`,
+    cls:ipClass(ip),cidr:'/'+p,priv:isPrivate(n),short:`${ip}/${p}`,
     binId:bin32(n),intId:String(n),hexId:hex,arpa:ip.split('.').reverse().join('.')+'.in-addr.arpa',
     mapped:`::ffff:${h.slice(0,4)}.${h.slice(4)}`,sixto4:`2002:${h.slice(0,4)}.${h.slice(4)}::/48`};
 }
